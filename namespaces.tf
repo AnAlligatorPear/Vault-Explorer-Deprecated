@@ -2,14 +2,14 @@
 resource "kubernetes_namespace" "vault" {
   metadata {
     annotations = {
-      name = "vault"
+      name = "vaultexplorer"
     }
 
     labels = {
-      team = "vault"
+      team = "vaultexplorer"
     }
 
-    name = "vault"
+    name = "vaultexplorer"
   }
 }
 

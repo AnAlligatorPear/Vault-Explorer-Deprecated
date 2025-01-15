@@ -15,7 +15,7 @@ terraform {
 data "kubernetes_service" "vault" {
   depends_on = [ helm_release.vault ]
   metadata {
-    name = "vault"
+    name = "vaultexplorer"
     namespace = kubernetes_namespace.vault.id
   }
 }
