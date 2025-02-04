@@ -1083,23 +1083,7 @@ grafana:
 
   ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-  additionalDataSources: 
-    - name: "Vault API"
-      type: "yesoreyeram-infinity-datasource"
-      url: "$VAULT_ADDR"  # Use the environment variable here
-      basicAuth: false
-      basicAuthUser: ""
-      isDefault: false
-      jsonData:
-        allowedHosts:
-          - "$VAULT_ADDR"  # Use the environment variable here
-        apiKeyKey: "X-Vault-Token"
-        auth_method: "apiKey"
-        global_queries: []
-        oauthPassThru: false
-      readOnly: false
-      secureJsonData:
-        apiKeyValue: "$VAULT_TOKEN"  # Use the environment variable here
+  
   # - name: prometheus-sample
   #   access: proxy
   #   basicAuth: true
@@ -3624,28 +3608,7 @@ prometheus:
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
 
-    ## Adding Vault and VSO Additional Scrapers
-    additionalScrapeConfigs:
-      - job_name: vault
-        metrics_path: /v1/sys/metrics
-        params:
-          format: ['prometheus']
-        scheme: http
-        authorization:
-          credentials_file: /etc/prometheus/secrets/vaulttoken/token
-        static_configs:
-        - targets: ['$VAULT_ADDR']
-      - job_name: vso
-        metrics_path: /metrics 
-        params:
-          format: ['prometheus']
-        scheme: https
-        authorization:
-          credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-        tls_config:
-          insecure_skip_verify: true
-        static_configs:
-        - targets: ['vso-vault-secrets-operator-metrics-service:8443']
+    
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node
