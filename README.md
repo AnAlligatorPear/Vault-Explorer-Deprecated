@@ -37,8 +37,8 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 3. Export your Vault Server's web address+port, API Key (read only from root namespace, and namespace):
 ```
-$ export VAULT_ADDR="http://yourvaultaddress:0000" 
-$ export VAULT_TOKEN="API Vault Token"
+$ export vault_addr="http://yourvaultaddress:0000" 
+$ export vault_key="API Vault Token"
 ```
 
 4. Ensure that your Docker Desktop Kubernetes configs are located in `~/.kube/config` or update the kubernetes provider config in the `providers.tf` file to reflect the actual path for your kubernetes config if it's not `~/.kube/config`. 
