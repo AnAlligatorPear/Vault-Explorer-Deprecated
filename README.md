@@ -39,12 +39,10 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 $ export VAULT_ADDR="http://yourvaultaddress:0000" 
 $ export VAULT_TOKEN="API Vault Token"
-$ export VAULT_NAMESPACE="root"
 ```
 
 4. Ensure that your Docker Desktop Kubernetes configs are located in `~/.kube/config` or update the kubernetes provider config in the `providers.tf` file to reflect the actual path for your kubernetes config if it's not `~/.kube/config`. 
 
-> Note: If you are running Terraform on natively on Mac/Windows(locally) then you need to update the Vault provider configs under `provider.tf` and choose the right `address` config (details in the comments in provider.tf) 
 
 
 5. Initialize Terraform and run Terraform Plan/Apply

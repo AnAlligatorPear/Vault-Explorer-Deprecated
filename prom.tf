@@ -9,10 +9,32 @@ resource "helm_release" "prometheus" {
   version    = var.prom_version
 
 
+  # Load the existing YAML configuration and marge the templatefile with the prometheus yaml
   values = [
-    "${file("prom.stack.values.yml")}"
+    yamlencode(
+      merge(
+        yamldecode(file("${path.module}/prom.stack.values.yml")),
+        yamldecode(templatefile("${path.module}/grafana-values.tftpl", {
+          vault_addr = var.vault_addr
+          vault_key  = var.vault_key
+        }))
+      )
+    )
   ]
 }
+variable "vault_addr" {
+  type = string
+  description = "The Vault address being accessed by Grafana/Prometheus"
+  sensitive = false
+}
+
+variable "vault_key" {
+  type = string
+  description = "The Vault token to use for authentication"
+  sensitive = true
+}
+
+
 
 resource "kubernetes_secret_v1" "vault_token" {
   metadata {

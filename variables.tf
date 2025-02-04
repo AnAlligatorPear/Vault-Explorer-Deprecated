@@ -7,8 +7,8 @@ variable kubernetes_endpoint {
 
 variable vault_admin_token {
   type        = string
-  default     = "$VAULT_TOKEN"
-  description = "Vault Token" 
+  default     = "root"
+  description = "Vault Token"
 }
 
 # Promethues Stack Helm Version
