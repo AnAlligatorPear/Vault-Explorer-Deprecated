@@ -1,7 +1,6 @@
 # Monitoring Stack
 # Deploying sidecar injector helm chart
 resource "helm_release" "prometheus" {
-  depends_on = [ helm_release.vault ]
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -23,23 +22,23 @@ resource "helm_release" "prometheus" {
   ]
 }
 variable "vault_addr" {
-  type = string
+  type        = string
   description = "The Vault address being accessed by Grafana/Prometheus"
-  sensitive = false
+  sensitive   = false
 }
 
 variable "vault_key" {
-  type = string
+  type        = string
   description = "The Vault token to use for authentication"
-  sensitive = true
+  sensitive   = true
 }
 
 
 
 resource "kubernetes_secret_v1" "vault_token" {
   metadata {
-    name = "vaulttoken"
-    namespace  = kubernetes_namespace.vault.id
+    name      = "vaulttoken"
+    namespace = kubernetes_namespace.vault.id
   }
 
   data = {
@@ -58,13 +57,9 @@ resource "kubernetes_config_map" "grafana-dashboards-vault" {
     labels = {
       grafana_dashboard = 1
     }
-
-    annotations = {
-      k8s-sidecar-target-directory = "/tmp/dashboards/vault"
-    }
   }
 
   data = {
-    "vault.grafana.json"        = file("vault.grafana.json")
+    "vault.grafana.json" = file("vault.grafana.json")
   }
 }
