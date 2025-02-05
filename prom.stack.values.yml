@@ -1081,7 +1081,7 @@ grafana:
   # - name: example-datasource
   #   orgId: 1
 
-  ## Configure additional grafana datasources (passed through tpl)
+  ## Configure additional grafana datasources (passed through tpl) Removed by TF and paramterized in templatefile
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
   
   # - name: prometheus-sample
@@ -3608,7 +3608,8 @@ prometheus:
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
 
-    
+    ## Removed config and paramaterized into templatefile
+  
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node

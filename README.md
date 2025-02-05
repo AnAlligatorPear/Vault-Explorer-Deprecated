@@ -35,17 +35,12 @@ CoreDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
-3. Export your Vault Server's web address+port, API Key (read only from root namespace, and namespace):
-```
-$ export vault_addr="http://yourvaultaddress:0000" 
-$ export vault_key="API Vault Token"
-```
 
-4. Ensure that your Docker Desktop Kubernetes configs are located in `~/.kube/config` or update the kubernetes provider config in the `providers.tf` file to reflect the actual path for your kubernetes config if it's not `~/.kube/config`. 
+3. Ensure that your Docker Desktop Kubernetes configs are located in `~/.kube/config` or update the kubernetes provider config in the `providers.tf` file to reflect the actual path for your kubernetes config if it's not `~/.kube/config`. 
 
 
 
-5. Initialize Terraform and run Terraform Plan/Apply
+4. Initialize Terraform and run Terraform Plan/Apply. You will be asked to provide your Vault's Address and Admin Token during the Apply process.
 
 
 ```
@@ -90,30 +85,23 @@ dave_entity_lookup_id = "fbd55dbe-bfdb-5b49-c8b9-14c6667b37a5"
 6. It will take a few minutes for the deloyment to finish, once it does you can validate that it deployed successfully
 
 ```
-$ kubeclt get pod -n vault
+$ kubeclt get pod -n vaultexplorer
 NAME                                                            READY   STATUS      RESTARTS   AGE
-alertmanager-prometheus-kube-prometheus-alertmanager-0          2/2     Running     0          3m3s
-benchmark-jhf5q                                                 0/1     Completed   0          2m28s
-ldap-6b49f5c885-9dc4w                                           1/1     Running     0          3m29s
-prometheus-grafana-9c98f646b-vndgg                              3/3     Running     0          3m4s
-prometheus-kube-prometheus-operator-7664bd5b4b-8nbwb            1/1     Running     0          3m4s
-prometheus-kube-state-metrics-6db866c85b-bfd8t                  1/1     Running     0          3m4s
-prometheus-prometheus-kube-prometheus-prometheus-0              2/2     Running     0          3m3s
-prometheus-prometheus-node-exporter-57kzx                       1/1     Running     0          3m4s
-vault-0                                                         1/1     Running     0          3m25s
-vault-agent-injector-559b9646cb-flbq7                           1/1     Running     0          3m26s
-vso-vault-secrets-operator-controller-manager-9df69fbd5-phw9j   2/2     Running     0          3m10s
+alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running            0             2m16s
+prometheus-grafana-56f54d5c96-bxnng                      3/3     Running            0             2m17s
+prometheus-kube-prometheus-operator-768bb689c9-thxgm     1/1     Running            0             2m17s
+prometheus-kube-state-metrics-754dbb4fd4-xx5rs           1/1     Running            0             2m17s
+prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running            0             2m16s
+prometheus-prometheus-node-exporter-kcc9b                0/1     Running            0              2m17s
 
 
 $  kubectl get ns    
 NAME              STATUS   AGE
-blue              Active   2m21s
-default           Active   63d
-kube-node-lease   Active   63d
-kube-public       Active   63d
-kube-system       Active   63d
-red               Active   2m21s
-vault             Active   2m21s
+default           Active   21d
+kube-node-lease   Active   21d
+kube-public       Active   21d
+kube-system       Active   21d
+vaultexplorer     Active   3m47s
 
 ```
 
@@ -177,15 +165,10 @@ We deployed a full Prometheus + Grafana Stack and loaded up a sample Grafana das
 ### Teardown
 
 ```
-$ kubectl delete -f app-a.yml -n blue
-$ kubectl delete -f app-b.yml -n red
+
 $ terraform destroy --auto-approve
 ```
 
-For brute-force style teardown, you can issue `kubectl delete ns blue red vault`, and in case you have a namespace stuck in the `Terminating` state you can issue this command to clear any k8s finalizers 
-
-```
-NS=`kubectl get ns |grep Terminating | awk 'NR==1 {print $1}'` && kubectl get namespace "$NS" -o json | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/"   | kubectl replace --raw /api/v1/namespaces/$NS/finalize -f - 
 
 ```
 
