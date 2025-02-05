@@ -12,13 +12,6 @@ terraform {
   }
 }
 
-data "kubernetes_service" "vault" {
-  metadata {
-    name      = "vaultexplorer"
-    namespace = kubernetes_namespace.vault.id
-  }
-}
-
 
 provider "kubernetes" {
   config_path    = "~/.kube/config"
