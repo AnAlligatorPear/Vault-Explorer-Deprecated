@@ -1,5 +1,4 @@
-grafana:
-  additionalDataSources:
+grafana.additionalDataSources:
     - name: "Vault API"
       type: "yesoreyeram-infinity-datasource"
       url: "${vault_addr}" 
@@ -17,8 +16,7 @@ grafana:
       secureJsonData:
         apiKeyValue: "${vault_key}"  
 
-prometheus:
-  additionalScrapeConfigs:
+prometheus.additionalScrapeConfigs:
     - job_name: vault
       metrics_path: /v1/sys/metrics
       params:
