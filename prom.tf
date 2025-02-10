@@ -8,17 +8,12 @@ resource "helm_release" "prometheus" {
   version    = var.prom_version
 
 
-  # Load the existing YAML configuration and marge the templatefile with the prometheus yaml
+  # Changed .yml to .tftpl to parameterize TF variables
   values = [
-    yamlencode(
-      merge(
-        yamldecode(file("${path.module}/prom.stack.values.yml")),
-        yamldecode(templatefile("${path.module}/grafana-values.tftpl", {
-          vault_addr = var.vault_addr
-          vault_key  = var.vault_key
-        }))
-      )
-    )
+    templatefile("${path.module}/prom.stack.values.tftpl", {
+      vault_addr = var.vault_addr,
+      vault_key  = var.vault_key
+    })
   ]
 }
 variable "vault_addr" {

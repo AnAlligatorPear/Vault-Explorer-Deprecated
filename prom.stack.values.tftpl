@@ -1081,9 +1081,25 @@ grafana:
   # - name: example-datasource
   #   orgId: 1
 
-  ## Configure additional grafana datasources (passed through tpl) Removed by TF and paramterized in templatefile
+  ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-  
+  additionalDataSources: 
+    - name: "Vault API"
+      type: "yesoreyeram-infinity-datasource"
+      url: "${vault_addr}"
+      basicAuth: false
+      basicAuthUser: ""
+      isDefault: false
+      jsonData:
+        allowedHosts:
+          - "${vault_addr}"
+        apiKeyKey: "X-Vault-Token"
+        auth_method: "apiKey"
+        global_queries: []
+        oauthPassThru: false
+      readOnly: false
+      secureJsonData:
+        apiKeyValue: "${vault_key}"
   # - name: prometheus-sample
   #   access: proxy
   #   basicAuth: true
@@ -2784,9 +2800,7 @@ prometheus:
 
   # Service for thanos service discovery on sidecar
   # Enable this can make Thanos Query can use
-  # `--store=dnssrv+_grpc._tcp.${kube-prometheus-stack.fullname}-thanos-discovery.${namespace}.svc.cluster.local` to discovery
-  # Thanos sidecar on prometheus nodes
-  # (Please remember to change ${kube-prometheus-stack.fullname} and ${namespace}. Not just copy and paste!)
+  
   thanosService:
     enabled: false
     annotations: {}
@@ -3608,8 +3622,28 @@ prometheus:
     ## port to 2379 and allow etcd scraping provided it is running on all Kubernetes master nodes
     ##
 
-    ## Removed config and paramaterized into templatefile
-  
+    ## Adding Vault and VSO Additional Scrapers
+    additionalScrapeConfigs:
+      - job_name: vault
+        metrics_path: /v1/sys/metrics
+        params:
+          format: ['prometheus']
+        scheme: http
+        authorization:
+          credentials_file: /etc/prometheus/secrets/vaulttoken/token
+        static_configs:
+        - targets: ['${vault_addr}']
+      - job_name: vso
+        metrics_path: /metrics 
+        params:
+          format: ['prometheus']
+        scheme: https
+        authorization:
+          credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          insecure_skip_verify: true
+        static_configs:
+        - targets: ['vso-vault-secrets-operator-metrics-service:8443']
     # - job_name: kube-etcd
     #   kubernetes_sd_configs:
     #     - role: node
