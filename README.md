@@ -1,3 +1,5 @@
+This is deprecated, please go to (https://github.com/AnAlligatorPear/Vault-Explorer) for the updated repo
+
 # Vault Explorer for Metrics via OSS Grafana/Prometheus
 
 ![img](img/vault_grafana_dashboard.png)
